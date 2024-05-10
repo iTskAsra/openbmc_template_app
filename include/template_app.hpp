@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <cstdint>
+#include <string>
 
 int changeIntegerValue(const int& requestedValue, int& currentValue);
 
