@@ -7,11 +7,11 @@ DEPENDS = " \
   ${@bb.utils.contains('PTEST_ENABLED', '1', 'gtest', '', d)} \
   ${@bb.utils.contains('PTEST_ENABLED', '1', 'gmock', '', d)} \
 "
-SRC_URI = "git@github.com:edtanous/openbmc_template_app.git;protocol=ssh"
+SRC_URI = "git://github.com/edtanous/openbmc_template_app;branch=master;protocol=https"
 SRCREV = "bf0da3d059f57ddceecd14daae8f1652e73bfbdf"
 PV = "1.0+git${SRCPV}"
 SYSTEMD_SERVICE_${PN}:append = "xyz.openbmc_project.templateapp.service"
-S = "${WORKDIR}/git/template_app"
+S = "${WORKDIR}/git"
 inherit meson systemd
 
 PACKAGECONFIG ??= ""
