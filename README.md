@@ -20,7 +20,7 @@ Update the SRC_URI in the bb file to the latest commit from this repo.
 
 Open $BBPATH/conf/local.conf and add
 
-```
+```bash
 IMAGE_INSTALL:append = "my-app-name"
 ```
 
