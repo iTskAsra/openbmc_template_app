@@ -1,5 +1,4 @@
-#include <errno.h>
-
+#include <cerrno>
 #include <cstdint>
 #include <string>
 
