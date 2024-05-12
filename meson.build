@@ -4,7 +4,7 @@ project(
     default_options: [
         'warning_level=3',
         'werror=true',
-        'cpp_std=c++17',
+        'cpp_std=c++20',
         # note: This is allowed in certain contexts, but provides binary size
         # improvements for applications that don't require rtti
         'cpp_rtti=false',
@@ -12,6 +12,11 @@ project(
     license: 'Apache-2.0',
     version: '0.1',
 )
+
+# Validate the c++ Standard
+if get_option('cpp_std') != 'c++20'
+    error('This project requires c++20 support')
+endif
 
 systemd = dependency('systemd')
 sdbusplus = dependency('sdbusplus')
