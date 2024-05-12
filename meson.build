@@ -8,6 +8,7 @@ project(
         # note: This is allowed in certain contexts, but provides binary size
         # improvements for applications that don't require rtti
         'cpp_rtti=false',
+        'b_lto=true',
     ],
     license: 'Apache-2.0',
     version: '0.1',
@@ -18,19 +19,49 @@ if get_option('cpp_std') != 'c++20'
     error('This project requires c++20 support')
 endif
 
+boost = dependency(
+    'boost',
+    version: '>=1.84.0',
+    required: false,
+    include_type: 'system',
+)
+if not boost.found()
+    cmake = import('cmake')
+    opt = cmake.subproject_options()
+    opt.add_cmake_defines(
+        {
+            'BOOST_INCLUDE_LIBRARIES': 'asio;callable_traits;container;headers',
+            'BUILD_SHARED_LIBS': 'OFF',
+        },
+    )
+
+    boost = cmake.subproject('boost', required: true, options: opt)
+    boost_asio = boost.dependency('boost_asio').as_system()
+    boost_callable_traits = boost.dependency('boost_callable_traits').as_system()
+    boost_container = boost.dependency('boost_container').as_system()
+    boost_headers = boost.dependency('boost_headers').as_system()
+    boost = [boost_asio, boost_callable_traits, boost_container, boost_headers]
+endif
+add_project_arguments(
+    '-DBOOST_ASIO_DISABLE_THREADS',
+    '-DBOOST_NO_RTTI',
+    '-DBOOST_NO_TYPEID',
+    language : 'cpp'
+)
+
 systemd = dependency('systemd')
-sdbusplus = dependency('sdbusplus')
+sdbusplus = dependency('sdbusplus', required: false, include_type: 'system')
+if not sdbusplus.found()
+    sdbusplus_proj = subproject('sdbusplus', required: true)
+    sdbusplus = sdbusplus_proj.get_variable('sdbusplus_dep')
+    sdbusplus = sdbusplus.as_system('system')
+endif
+add_project_arguments(
+    '-DSDBUSPLUS_DISABLE_BOOST_COROUTINES',
+    language : 'cpp'
+)
 
 cxx = meson.get_compiler('cpp')
-add_project_arguments(
-cxx.get_supported_arguments([
-'-DBOOST_ASIO_USE_TS_EXECUTOR_AS_DEFAULT',
-'-DBOOST_ASIO_DISABLE_THREADS',
-'-DBOOST_NO_RTTI',
-'-DBOOST_NO_TYPEID',
-'-DBOOST_ALLOW_DEPRECATED_HEADERS'
-]),
-language : 'cpp')
 
 systemd_system_unit_dir = systemd.get_pkgconfig_variable(
     'systemdsystemunitdir'
@@ -52,6 +83,7 @@ executable(
     'template-app',
     'src/template_app_main.cpp',
     dependencies: [
+      boost,
       sdbusplus,
     ],
     include_directories: 'include',
@@ -86,6 +118,7 @@ if get_option('tests').enabled()
       'template-app-test',
       'test/template_app_test.cpp',
       dependencies: [
+          boost,
           sdbusplus,
           gmock_dep,
           gtest_dep,
