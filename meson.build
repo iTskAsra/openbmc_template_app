@@ -98,8 +98,8 @@ executable(
 )
 
 if get_option('tests').enabled()
-    gtest_dep = dependency('gtest', main: true, disabler: true, required: false)
-    gmock_dep = dependency('gmock', disabler: true, required: false)
+    gtest_dep = dependency('gtest', main: true, disabler: true, required: false, include_type: 'system')
+    gmock_dep = dependency('gmock', disabler: true, required: false, include_type: 'system')
     if not gtest_dep.found() or not gmock_dep.found()
         gtest_proj = import('cmake').subproject('gtest', required: false)
         if gtest_proj.found()
