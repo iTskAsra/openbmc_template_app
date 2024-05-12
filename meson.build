@@ -1,8 +1,7 @@
 project(
     'template-application',
     'cpp',
-    version: '1.0',
-    meson_version: '>=0.63.0',
+    meson_version: '>=1.3.0',
     default_options: [
         'warning_level=3',
         'werror=true',
