@@ -64,14 +64,17 @@ add_project_arguments(
 
 cxx = meson.get_compiler('cpp')
 
-systemd_system_unit_dir = systemd.get_pkgconfig_variable(
-    'systemdsystemunitdir'
+systemd_system_unit_dir = systemd.get_variable(
+    pkgconfig: 'systemdsystemunitdir'
 )
+
+systemd_unit_configuration = configuration_data()
+systemd_unit_configuration.set('INSTALL_PREFIX', get_option('prefix'))
 
 configure_file(input: 'xyz.openbmc_project.templateapp.service',
                output: 'xyz.openbmc_project.templateapp.service',
+               configuration: systemd_unit_configuration,
                install_dir: systemd_system_unit_dir,
-               copy: true,
                install: true)
 
 template_app_a = static_library(
