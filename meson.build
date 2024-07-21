@@ -49,7 +49,7 @@ template_app_a = static_library(
 )
 
 executable(
-    'template-app',
+    'template_app',
     'src/template_app_main.cpp',
     dependencies: [
       sdbusplus,
