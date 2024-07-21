@@ -1,7 +1,7 @@
 project(
     'template-application',
     'cpp',
-    meson_version: '>=1.3.0',
+    meson_version: '>=1.0.1',
     default_options: [
         'warning_level=3',
         'werror=true',
@@ -22,7 +22,7 @@ endif
 
 boost = dependency(
     'boost',
-    version: '>=1.84.0',
+    version: '>=1.81.0',
     required: false,
     include_type: 'system',
 )
