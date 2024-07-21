@@ -1,9 +1,13 @@
 [Unit]
 Description=Template application for openbmc
-StopWhenUnneeded=false
+After=network.target
 
 [Service]
-ExecStart=@INSTALL_PREFIX@/bin/template_app
+ExecStart=/usr/bin/template_app
+Restart=no
+# Additional directives to improve debugging
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
